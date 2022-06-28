@@ -3,16 +3,15 @@ package com.querydsl.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.security.cert.CertPathBuilder;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id", "username", "age"})
 public class Member {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;
 
@@ -39,6 +38,7 @@ public class Member {
             changeTeam(team);
         }
     }
+
 
     public void changeTeam(Team team) {
         this.team = team;

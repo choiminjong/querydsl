@@ -24,8 +24,7 @@ class HelloTest {
         JPAQueryFactory query = new JPAQueryFactory(em);
         QHello qHello = QHello.hello;
 
-        Hello result = query.selectFrom(qHello)
-                        .fetchOne();
+        Hello result = query.selectFrom(qHello).fetchOne();
 
         assertThat(result).isEqualTo(hello);
         assertThat(result.getId()).isEqualTo(hello.getId());
