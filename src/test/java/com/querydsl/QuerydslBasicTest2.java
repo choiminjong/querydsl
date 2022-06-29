@@ -21,6 +21,8 @@ import com.querydsl.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -229,4 +231,55 @@ public class QuerydslBasicTest2 {
         assertThat(result).extracting("username").containsExactly("member1","member2");
     }
 
+    @Test
+    public void searchPageSimpleTest() {
+//        Team teamA = new Team("teamA");
+//        Team teamB = new Team("teamB");
+//        em.persist(teamA);
+//        em.persist(teamB);
+//
+//        Member member1 = new Member("member1", 10, teamA);
+//        Member member2 = new Member("member2", 20, teamA);
+//        Member member3 = new Member("member3", 30, teamB);
+//        Member member4 = new Member("member4", 40, teamB);
+//        em.persist(member1);
+//        em.persist(member2);
+//        em.persist(member3);
+//        em.persist(member4);
+
+        MemberSearchCondition condition = new MemberSearchCondition();
+        PageRequest pageRequest = PageRequest.of(0, 3);
+
+        Page<MemberTeamDto> result = memberRepository.searchPageSimple(condition, pageRequest);
+        System.out.println("result = " + result.getContent());
+        /*
+        result = [
+            MemberTeamDto(memberId=41, username=member1, age=10, teamId=60, teamName=teamA),
+            MemberTeamDto(memberId=42, username=member2, age=11, teamId=60, teamName=teamA),
+            MemberTeamDto(memberId=43, username=member3, age=12, teamId=null, teamName=null)]
+         */
+        assertThat(result.getNumberOfElements()).isEqualTo(3);
+        assertThat(result.getContent()).extracting("username").containsExactly("member1", "member2", "member3");
+    }
+
+    @Test
+    public void searchPageComplexTest() {
+
+        MemberSearchCondition condition = new MemberSearchCondition();
+        PageRequest pageRequest = PageRequest.of(1, 3);
+
+        Page<MemberTeamDto> result = memberRepository.searchPageComplex(condition, pageRequest);
+        System.out.println("result.getNumberOfElements = " + result.getNumberOfElements());
+        System.out.println("result.getContent = " + result.getContent());
+        /*
+        result.getNumberOfElements = 3
+        result.getContent = [
+            MemberTeamDto(memberId=44, username=member4, age=13, teamId=null, teamName=null),
+            MemberTeamDto(memberId=45, username=member5, age=14, teamId=null, teamName=null),
+            MemberTeamDto(memberId=46, username=member6, age=15, teamId=null, teamName=null)]
+        */
+
+        assertThat(result.getNumberOfElements()).isEqualTo(3);
+        assertThat(result.getContent()).extracting("username").containsExactly("member4","member5","member6");
+    }
 }
